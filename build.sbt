@@ -7,4 +7,4 @@ scalacOptions ++= Seq("-feature")
 fullResolvers ~= {_.filterNot(_.name == "jcenter")}
 
 dogSettings
-dogVersion := "0.1.4"
+dogVersion := "0.1.5"
