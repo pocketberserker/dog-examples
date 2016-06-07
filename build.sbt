@@ -5,4 +5,4 @@ crossScalaVersions := Seq("2.10.6", "2.11.8")
 scalacOptions ++= Seq("-feature")
 
 dogSettings
-dogVersion := "0.2.0"
+dogVersion := "0.3.0"
