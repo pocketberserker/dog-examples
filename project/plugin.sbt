@@ -1,1 +1,1 @@
-addSbtPlugin("com.github.pocketberserker" % "sbt-dog" % "0.1.0")
+addSbtPlugin("com.github.pocketberserker" % "sbt-dog" % "0.1.1")
