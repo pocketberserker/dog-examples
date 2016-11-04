@@ -9,23 +9,22 @@ object Examples extends Dog with Assert {
 
   val `success example` = TestCase {
     for {
-      _ <- equal(1, 1).monadic
+      _ <- equal(1, 1).lift
     } yield 1
   }
 
   val `bind test case` = TestCase {
     for {
       a <- `success example`;
-      _ <- equal(a, 2).monadic
+      _ <- equal(a, 2).lift
     } yield 2
   }
 
   val `soft assertion` = TestCase {
-    Assertion3(
-      equal(0, 0), // pass
-      equal(0, 1), // violate
-      equal(0, 2) // continue assertion
-    )
+    assert
+      .equal(0, 0) // pass
+      .equal(0, 1) // violate
+      .equal(0, 2) // continue assertion
   }
 
   val `throw exception` = TestCase {
@@ -33,13 +32,13 @@ object Examples extends Dog with Assert {
     val target = trap(f)
     for {
       e <- target
-      _ <- Assertion2(
-        equal("oops!", e.getMessage),
-        (e match {
-          case e: Exception => pass(())
-          case _ => fail("expected Exception, but not")
-        })
-      ).monadic
+      _ <- assert
+        .equal("oops!", e.getMessage)
+        .lift
+      _ <- (e match {
+        case e: Exception => pass(())
+        case _ => fail("expected Exception, but not")
+      }).lift
     } yield ()
   }
 
@@ -50,13 +49,13 @@ object Examples extends Dog with Assert {
       pass(value)
     }
     for {
-      a <- `side effect once`.monadic
-      b <- `side effect once`.monadic
-      _ <- Assertion3(
-        equal(1, value),
-        equal(1, a),
-        equal(1, b)
-      ).monadic
+      a <- `side effect once`.lift
+      b <- `side effect once`.lift
+      _ <- assert
+        .equal(1, value)
+        .equal(1, a)
+        .equal(1, b)
+        .lift
     } yield ()
   }
 
@@ -67,13 +66,17 @@ object Examples extends Dog with Assert {
       pass(value)
     }
     for {
-      a <- `delay test`().monadic
-      b <- `delay test`().monadic
-      _ <- Assertion3(
-        equal(1, value),
-        equal(1, a),
-        equal(1, b)
-      ).monadic
+      a <- `delay test`().lift
+      b <- `delay test`().lift
+      _ <- assert
+        .equal(1, value)
+        .equal(1, a)
+        .equal(1, b)
+        .lift
     } yield ()
   }
+
+  val `skip test case ` = TestCase {
+    fail[Unit]("oops!")
+  }.skip("skip example")
 }
